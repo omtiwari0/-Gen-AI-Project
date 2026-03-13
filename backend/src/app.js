@@ -1,29 +1,26 @@
 const express = require("express")
-const cookieParser = require("cookie-parser") 
+const cookieParser = require("cookie-parser")
+const cors = require("cors")
 
 const app = express()
+const clientUrl = process.env.CLIENT_URL || "http://localhost:5173"
 
 app.use(express.json())
 app.use(cookieParser())
+app.use(cors({
+    origin: clientUrl,
+    credentials: true
+}))
 
-/* require all routes here*/
-const authRouter = require("./routes/auth.route")
+/* require all the routes here */
+const authRouter = require("./routes/auth.routes")
+const interviewRouter = require("./routes/interview.routes")
 
 
-/* use all routes here*/
+/* using all the routes here */
 app.use("/api/auth", authRouter)
-
-
-
+app.use("/api/interview", interviewRouter)
 
 
 
 module.exports = app
-
-
-//app.js mainly 2 works
-// 1. server initiate krna/instance create krna (const app = express() app.use(express.json()))
-
-// 2. route/middleware ko yha use krna 
-
-// 3. server.js server start krta 

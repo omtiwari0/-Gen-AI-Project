@@ -1,13 +1,11 @@
 const userModel = require("../models/user.model")
 const bcrypt = require("bcryptjs")
-const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken")
 const tokenBlacklistModel = require("../models/blacklist.model")
 
-const JWT_SECRET = process.env.JWT_SECRET || process.env.JWT_SECRET_KEY;
-
 /**
- * @route POST /api/auth/register
- * @desc Register a new use. needed fields: username, email, password
+ * @name registerUserController
+ * @description register a new user, expects username, email and password in the request body
  * @access Public
  */
 async function registerUserController(req, res) {
@@ -58,18 +56,13 @@ async function registerUserController(req, res) {
 
 }
 
+
 /**
  * @name loginUserController
  * @description login a user, expects email and password in the request body
  * @access Public
  */
 async function loginUserController(req, res) {
-    if (!JWT_SECRET) {
-        return res.status(500).json({
-            message: "JWT secret is not configured"
-        })
-    }
-
 
     const { email, password } = req.body
 
@@ -91,7 +84,7 @@ async function loginUserController(req, res) {
 
     const token = jwt.sign(
         { id: user._id, username: user.username },
-        JWT_SECRET,
+        process.env.JWT_SECRET,
         { expiresIn: "1d" }
     )
 
@@ -105,6 +98,7 @@ async function loginUserController(req, res) {
         }
     })
 }
+
 
 /**
  * @name logoutUserController
@@ -124,7 +118,6 @@ async function logoutUserController(req, res) {
         message: "User logged out successfully"
     })
 }
-
 
 /**
  * @name getMeController
@@ -148,9 +141,11 @@ async function getMeController(req, res) {
 
 }
 
-module.exports = { 
+
+
+module.exports = {
     registerUserController,
     loginUserController,
     logoutUserController,
     getMeController
- }
+}
